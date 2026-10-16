@@ -36,10 +36,12 @@ def draw(car, obstacles, score):
     
      #создаем двухмерный массив: список пробелов размером с наше игровое поле   
     rows = []
-    for i in range(HEIGHT): # номера строк: от 0 до HEIGHT - 1
-        row = [" "] * WIDTH # номера столбцев: от 0 до WIDTH - 1
+    for i in range(HEIGHT): #номера строк: от 0 до HEIGHT - 1
+        row = []
+        for j in range(WIDTH): #номера столбцев: от 0 до WIDTH - 1
+            row.append(" ")
         rows.append(row)
-    
+
     # заполняем препятствиями
     for x, y in obstacles:
         rows[y][x] = "#"
@@ -49,11 +51,11 @@ def draw(car, obstacles, score):
     
     #делаем из массива символов - строку:
     road=""
-    for r in rows:
+    for r in range(HEIGHT):
         road += "|"
-        for c in r:
-            road += rows[r][c]
-        road += "|"
+        for c in range(WIDTH):
+            road += rows[r][c] 
+        road += "|"+ '\n'
  
     #собераем все в одну строку
     s = (
@@ -69,9 +71,8 @@ def draw(car, obstacles, score):
 #НАША ПРОГРАММА
 # начальные значения:
 car = WIDTH // 2    # позиция (координата x) машины
-obstacles = set()   # препятствия. Функция set() - встроена в Python, создает пустое множество (коллекция уникальных элементов).
-                    # Элементами могут быть любые неизменяемые объекты. Мы будем хранить кортежи чисел - координаты припятствий.
-                    # Пример: (5, 12) - что означает что в позиции х=5, y=12 находится препятствие. То есть в строке 12, столбце 5.
+obstacles = []      # препятствия. 
+                    # Пример: [5, 12] - что означает что в позиции х=5, y=12 находится препятствие. То есть в строке 12, столбце 5.
 score = 0           # счет
 
 print("\033[2J", end="") # очистить экран
@@ -88,12 +89,12 @@ while True:
     
     
     # Перемещаем препятствия вниз
-    new_obstacles = set()
+    new_obstacles = []
     
     for x, y in obstacles:
         new_y = y + 1
         if new_y < HEIGHT: # перемещаем до полседней строки. Последняя строка имеет номер (HEIGHT - 1)
-            new_obstacles.add((x, new_y))
+            new_obstacles.append([x, new_y])
             
     obstacles = new_obstacles
     
@@ -101,14 +102,14 @@ while True:
     # Добавляем новое препятствие в верхнюю строку. (координата y = 0)
     if random.random() < 0.22:      #добавляем не всегда, а в 22% случайных случаев.
         x = random.randrange(WIDTH) # возвращает случайное целое число в диапазоне от 0 до WIDTH-1 включительно.
-        obstacles.add(x, 0)
+        obstacles.append([x, 0])
 
 
     # Рисуем игровое поле
     draw(car, obstacles, score)
 
     # Проверяем столкновение
-    if (car, HEIGHT - 1) in obstacles: # если в позиции автомобиля есть препятствие, то авария. (HEIGHT - 1) -номер последней строки.
+    if [car, HEIGHT - 1] in obstacles: # если в позиции автомобиля есть препятствие, то авария. (HEIGHT - 1) -номер последней строки.
         print(f"\nАвария! Итоговый счёт: {score}")
         break
 
@@ -118,3 +119,6 @@ while True:
     #Точность:
     #На Windows точность обычно ~10-15 мс
     #На Linux/macOS точность выше ~1-4 мс
+
+
+#Ctrl + C  - прервать выполнение программы
