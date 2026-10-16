@@ -26,54 +26,70 @@ def draw(car, obstacles, score):
         rows[y][x] = "#"
     rows[-1][car] = "A"
     road = "\n".join("|" + "".join(row) + "|" for row in rows)
-    print(f"\033[HСчёт: {score}\n{road}", end="", flush=True)
+    
+    s = (
+        "\033[H" +      # перемещает курсор в левый верхний угол,
+        f"Счёт: {score}" +
+        "\n" +          # переход на следующую строку
+        f"{road}"       
+    )
+    print(s, end="", flush=True)
 
 
 def game():
     car, obstacles, score = WIDTH // 2, set(), 0
 
-    try:
+    #Терминал умеет принимать не только обычный текст, но и специальные управляющие последовательности.
+    #С их помощью можно перемещать курсор, очищать экран, менять цвет символов и управлять режимом их отображения.
+    
+    #Чаще всего в таких командах используются ANSI escape-последовательности.
+    #Они начинаются с управляющего символа Escape, который в строке Python записывается как "\033".
+    #После него указывается команда для терминала.
+    
+    print("\033[2J", end="") # очистить экран
+    #print("\033[?25l", end="") # скрыть курсор
+    #try:
         # Настройка консоли для чистого отображения
-        print("\033[2J\033[?25l", end="")
+        #print("\033[2J\033[?25l", end="") # очистить экран, скрыть курсор
 
-        while True:
-            # Считываем нажатие
-            pressed = key()
-            # Движение машины
-            car = max(
-                0,
-                min(
-                    WIDTH - 1,
-                    car
-                    + (pressed == "\x1b[C")
-                    - (pressed == "\x1b[D"),
-                ),
-            )
+    while True:
+        # Считываем нажатие
+        pressed = key()
+        # Движение машины
+        car = max(
+            0,
+            min(
+                WIDTH - 1,
+                car
+                + (pressed == "\x1b[C")
+                - (pressed == "\x1b[D"),
+            ),
+        )
 
-            # Перемещаем препятствия вниз
-            obstacles = {
-                (x, y + 1)
-                for x, y in obstacles
-                if y + 1 < HEIGHT
-            }
+        # Перемещаем препятствия вниз
+        obstacles = {
+            (x, y + 1)
+            for x, y in obstacles
+            if y + 1 < HEIGHT
+        }
 
-            # Добавляем новые препятствия
-            if random.random() < 0.22:
-                obstacles.add((random.randrange(WIDTH), 0))
+        # Добавляем новые препятствия
+        if random.random() < 0.22:
+            obstacles.add((random.randrange(WIDTH), 0))
 
-            # Рисуем игровое поле
-            draw(car, obstacles, score)
+        # Рисуем игровое поле
+        draw(car, obstacles, score)
 
-            # Проверяем столкновение
-            if (car, HEIGHT - 1) in obstacles:
-                print(f"\nАвария! Итоговый счёт: {score}")
-                break
+        # Проверяем столкновение
+        if (car, HEIGHT - 1) in obstacles:
+            print(f"\nАвария! Итоговый счёт: {score}")
+            break
 
-            score += 1
-            time.sleep(SPEED)
+        score += 1
+        time.sleep(SPEED)
             
-    finally:
-        print("\033[?25h", end="", flush=True) #показать курсор
+    #finally:
+        #print("\033[?25h", end="", flush=True) #показать курсор
 
 
 if __name__ == "__main__":
