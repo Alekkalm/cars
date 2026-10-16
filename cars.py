@@ -5,7 +5,7 @@ import keyboard #работает и на windows и на linux и на mac. н�
 
 import os
 os.system('')  # Магическая строка для включения ANSI в Windows 10+. Без этого не работает print("\033[H")
-#import sys # для отладки. Где хотим остановить программу, там пишем sys.exit()
+
 
 def draw(car_x, obstacles, score):
     
@@ -84,3 +84,4 @@ while True:
 
 #Ctrl + C  - прервать выполнение программы
 # Если вошли в интерактивный режим: >>>, то чтобы выйти из него: Ctrl + Z, нажать Enter.
+#import sys # для отладки. Где хотим остановить программу, там пишем sys.exit()
