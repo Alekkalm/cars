@@ -33,10 +33,13 @@ def game():
     car, obstacles, score = WIDTH // 2, set(), 0
 
     try:
+        # Настройка консоли для чистого отображения
         print("\033[2J\033[?25l", end="")
 
         while True:
+            # Считываем нажатие
             pressed = key()
+            # Движение машины
             car = max(
                 0,
                 min(
@@ -47,26 +50,30 @@ def game():
                 ),
             )
 
+            # Перемещаем препятствия вниз
             obstacles = {
                 (x, y + 1)
                 for x, y in obstacles
                 if y + 1 < HEIGHT
             }
 
+            # Добавляем новые препятствия
             if random.random() < 0.22:
                 obstacles.add((random.randrange(WIDTH), 0))
 
+            # Рисуем игровое поле
             draw(car, obstacles, score)
 
+            # Проверяем столкновение
             if (car, HEIGHT - 1) in obstacles:
                 print(f"\nАвария! Итоговый счёт: {score}")
                 break
 
             score += 1
             time.sleep(SPEED)
-
+            
     finally:
-        print("\033[?25h", end="", flush=True)
+        print("\033[?25h", end="", flush=True) #показать курсор
 
 
 if __name__ == "__main__":
