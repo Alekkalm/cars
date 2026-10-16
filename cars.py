@@ -63,7 +63,7 @@ def draw(car_x, obstacles, score):
 # константы:
 WIDTH = 9       # ширина игрового поля в символах
 HEIGHT= 18      # высота игрового поля в символах
-SPEED = 0.12    # время задержки между кадрами, в секундах
+DELAY = 0.12    # время задержки между кадрами, в секундах
 # начальные значения:
 car_x = WIDTH // 2    # позиция (координата x) машины
 obstacles = []      # препятствия. Список с координатами препятствий. Будет примерно так: obstacles = [[3, 5], [2, 8], [1, 2]]
@@ -85,11 +85,12 @@ while True:
     
     # Перемещаем препятствия вниз (создаем новый список с препятствиями в новой позиции)
     new_obstacles = []
-    
-    for x, y in obstacles: # x, y = [3, 8]   - это называется "распаковка".
+    for obstacle in obstacles: 
+        x, y = obstacle        # x, y = [3, 8]   - это называется "распаковка".
         new_y = y + 1
-        if new_y < HEIGHT: # перемещаем до полседней строки. Последняя строка имеет номер (HEIGHT - 1)
-            new_obstacles.append([x, new_y])
+        if new_y < HEIGHT:     # перемещаем до полседней строки. Последняя строка имеет номер (HEIGHT - 1)
+            new_obstacle = [x, new_y]
+            new_obstacles.append(new_obstacle)
             
     obstacles = new_obstacles
     
@@ -109,7 +110,7 @@ while True:
         break
 
     score += 1
-    time.sleep(SPEED)
+    time.sleep(DELAY)
     #Время сна в секундах.
     #Точность:
     #На Windows точность обычно ~10-15 мс
