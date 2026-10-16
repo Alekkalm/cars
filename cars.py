@@ -27,23 +27,47 @@ def draw(car, obstacles, score):
 def game():
     car, obstacles, score = WIDTH // 2, set(), 0
     settings = termios.tcgetattr(sys.stdin)
+
     try:
         tty.setcbreak(sys.stdin)
         print("\033[2J\033[?25l", end="")
+
         while True:
             pressed = key()
-            car = max(0, min(WIDTH - 1, car + (pressed == "\x1b[C") - (pressed == "\x1b[D")))
-            obstacles = {(x, y + 1) for x, y in obstacles if y + 1 < HEIGHT}
+            car = max(
+                0,
+                min(
+                    WIDTH - 1,
+                    car
+                    + (pressed == "\x1b[C")
+                    - (pressed == "\x1b[D"),
+                ),
+            )
+
+            obstacles = {
+                (x, y + 1)
+                for x, y in obstacles
+                if y + 1 < HEIGHT
+            }
+
             if random.random() < 0.22:
                 obstacles.add((random.randrange(WIDTH), 0))
+
             draw(car, obstacles, score)
+
             if (car, HEIGHT - 1) in obstacles:
                 print(f"\nАвария! Итоговый счёт: {score}")
                 break
+
             score += 1
             time.sleep(SPEED)
+
     finally:
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+        termios.tcsetattr(
+            sys.stdin,
+            termios.TCSADRAIN,
+            settings,
+        )
         print("\033[?25h", end="", flush=True)
 
 
