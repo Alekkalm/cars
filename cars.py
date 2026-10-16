@@ -1,18 +1,23 @@
+# объяснения кода: https://habr.com/ru/companies/yandex_praktikum/articles/1068624/
+# переделано для Windows:
+#   переделана фунция key(). использует библиотеку keyboard.
+#   удалены библиотеки select, termios, tty
 import os
 import random
-import select
 import sys
-import termios
 import time
-import tty
+import keyboard #работает и на windows и на linux и на mac. нужно установить библиотеку в систему: pip install keyboard
 
 WIDTH, HEIGHT, SPEED = 9, 18, 0.12
 
-
+#работает и на windows и на linux и на mac. нужно установить библиотеку в систему: pip install keyboard
 def key():
-    if not select.select([sys.stdin], [], [], 0)[0]:
-        return ""
-    return os.read(sys.stdin.fileno(), 3).decode(errors="ignore")
+    if keyboard.is_pressed('right'):
+        return '\x1b[C'
+    if keyboard.is_pressed('left'):
+        return '\x1b[D'
+    return ""
+    
 
 
 def draw(car, obstacles, score):
@@ -26,10 +31,8 @@ def draw(car, obstacles, score):
 
 def game():
     car, obstacles, score = WIDTH // 2, set(), 0
-    settings = termios.tcgetattr(sys.stdin)
 
     try:
-        tty.setcbreak(sys.stdin)
         print("\033[2J\033[?25l", end="")
 
         while True:
@@ -63,11 +66,6 @@ def game():
             time.sleep(SPEED)
 
     finally:
-        termios.tcsetattr(
-            sys.stdin,
-            termios.TCSADRAIN,
-            settings,
-        )
         print("\033[?25h", end="", flush=True)
 
 
