@@ -8,9 +8,6 @@ os.system('')  # Магическая строка для включения ANS
 
 
 def draw(car_x, obstacles, score):
-    
-    # устанавливаем автомобиль в последнюю строку.   
-    obstacles[-1][car_x] = "A"
 
     #собераем все в одну строку
     s = ""                        # пустая строка
@@ -71,10 +68,17 @@ while True:
         obstacles[0][x] = "#"
 
     # Проверяем столкновение
-    if obstacles[HEIGHT - 1][car_x] == "#": # 
-        print(f"\n💥 Авария! Итоговый счёт: {score}")
+    if obstacles[-1][car_x] == "#": 
+        # устанавливаем автомобиль в последнюю строку.   
+        obstacles[-1][car_x] = "Ж"
+        # Рисуем игровое поле
+        draw(car_x, obstacles, score)
+        print(f"\nАвария! Итоговый счёт: {score}")
         break
-        
+    else:    
+        # устанавливаем автомобиль в последнюю строку.   
+        obstacles[-1][car_x] = "A"
+    
     # Рисуем игровое поле
     draw(car_x, obstacles, score)
 
